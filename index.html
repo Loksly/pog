@@ -1,0 +1,183 @@
+<!doctype html>
+<html ng-app="pog">
+	<head>
+		<title>POG v4</title>
+		<meta charset="utf8">
+		<meta name="viewport" content="initial-scale=1" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.4/angular-material.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/github.min.css">
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+<!--
+	This is not the best way to deploy an app, neither an AngularJS one.
+	In fact I'd like to compressed and 'uglified' it.
+	Just consider this is just an alpha and it uses CDN for libraries.
+	Whenever it gets ready for a Release Candidate it will use bower for dependencies.
+-->
+		<div ng-controller="AppCtrl" ng-cloak class="page-container">
+			<md-toolbar class="md-menu-toolbar">
+				<div layout="row">
+					<md-toolbar-filler layout layout-align="center center">
+						<md-icon md-svg-src="imgs/pog.svg" aria-label="POG"></md-icon>
+					</md-toolbar-filler>
+					<div>
+						<h2 class="md-toolbar-tools">POG: PHP Object Generator <span>&nbsp; v.4 alpha</span></h2>
+						<md-menu-bar>
+							<md-menu>
+								<button ng-click="$mdOpenMenu()">
+									Menu
+								</button>
+								<md-menu-content>
+									<md-menu-item>
+										<md-button ng-click="configTemplate()">
+											Configure template
+										</md-button>
+									</md-menu-item>
+									<md-menu-item>
+										<md-button ng-click="reset()">
+											Reset
+										</md-button>
+									</md-menu-item>
+									<md-menu-divider></md-menu-divider>
+									<md-menu-item>
+										<md-button href="http://www.phpobjectgenerator.com" target="_blank">
+											About POG
+										</md-button>
+									</md-menu-item>
+								</md-menu-content>
+							</md-menu>
+						</md-menu-bar>
+					</div>
+					<div class="motif">Now on the fly!</div>
+				</div>
+			</md-toolbar>
+			<md-content class="bluebg" ng-show="showTemplate">
+				<h3>Template</h3>
+				<section layout="row" layout-sm="column" layout-align="center center" layout-wrap style="margin-bottom:1em;margin-top:1em">
+					<md-input-container class="md-block" flex="10" >
+					</md-input-container>
+					<md-content flex="80" style="padding:1em" style="background-color:rgb(242, 252, 226)">
+						<md-input-container class="md-block text-center" flex>
+							<label>Template</label>
+							<textarea ng-model="template"></textarea>
+						</md-input-container>
+						<md-input-container class="md-block text-center" flex>
+							<md-button class="md-raised" ng-click="configTemplate()">Close</md-button>
+						</md-input-container>
+					</md-content>
+					<md-input-container class="md-block" flex="10" >
+					</md-input-container>
+				</section>
+			</md-content>
+			<md-content class="bluebg" ng-hide="showTemplate">
+				<section layout="row" layout-sm="column" layout-align="center center" layout-wrap style="margin-bottom:1em;margin-top:1em">
+					<md-input-container class="md-block" flex="10" >
+					</md-input-container>
+					<md-content flex="80" style="padding:1em" style="background-color:rgb(242, 252, 226)">
+						<section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+							<md-input-container class="md-block" flex="80" >
+								<label>Link</label>
+								<input ng-model="link">
+							</md-input-container>
+							<md-input-container class="md-block text-center" flex>
+								<md-button class="md-raised md-primary" ng-click="regenerateLink()">Regenerate</md-button>
+							</md-input-container>
+						</section>
+						<section layout="row" layout-sm="column" layout-align="center center">
+							<md-input-container class="md-block" flex>
+								<label>Generate code for</label>
+								<md-select ng-model="language">
+									<md-option ng-value="language" ng-repeat="language in languages">{{language}}</md-option>
+								</md-select>
+							</md-input-container>
+							<md-input-container class="md-block" flex>
+								<label>Database wrapper</label>
+								<md-select ng-model="wrapper">
+									<md-option ng-value="wrapper" ng-repeat="wrapper in wrappers">{{wrapper}}</md-option>
+								</md-select>
+							</md-input-container>
+						</section>
+						<section layout="row" layout-sm="column" layout-align="center center">
+							<md-input-container class="md-block" flex>
+								<label>Class name</label>
+								<input ng-model="objectName">
+							</md-input-container>
+						</section>
+						<md-list>
+							<md-subheader class="md-no-sticky">Attributes</md-subheader>
+							<div class="text-right">
+								<md-button class="md-raised" ng-click="moreAttr()">Add one more attribute</md-button>
+							</div>
+							<md-list-item layout="row" layout-sm="column" layout-align="center center" layout-wrap ng-repeat="attrpair in attrs">
+								<md-input-container class="md-block" flex="70" >
+									<label>Name</label>
+									<input ng-model="attrpair.name" ng-change="refresh()">
+								</md-input-container>
+								<md-input-container class="md-block text-center" flex>
+									<label>Type</label>
+									<md-select ng-model="attrpair.type" ng-if="types.indexOf(attrpair.type)>=0" ng-change="refresh()">
+										<md-option ng-value="type" ng-repeat="type in types">{{type}}</md-option>
+									</md-select>
+									<input type="text" ng-model="attrpair.type" ng-if="types.indexOf(attrpair.type)<0">
+								</md-input-container>
+								<md-input-container class="md-block text-center" flex ng-if="attrpair.type === '{CHILD}'">
+									<label>Class</label>
+									<input type="text" ng-model="attrpair.class" ng-if="types.indexOf(attrpair.type)<0">
+								</md-input-container>
+								<md-input-container class="md-block text-center" flex>
+									<md-button class="md-raised md-warn" ng-click="removeAttr($index)">Remove</md-button>
+								</md-input-container>
+							</md-list-item>
+						</md-list>
+						<h4>This is just an alpha version</h4>
+						<p class="gray"><strong>Note some links may not be compatible!</strong> Note by now none of these types are supported. We're sorry for the inconvenience.</p>
+						<ul class="gray">
+							<li ng-repeat="t in UNSUPPORTED_TYPES">{{t}}</li>
+						</ul>
+						<section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+							<md-button class="md-raised md-primary" ng-disabled="!ready()" ng-click="generate()">Generate</md-button>
+							<md-button class="md-raised md-warn" ng-click="reset()">Reset</md-button>
+						</section>
+					</md-content>
+					<md-input-container class="md-block" flex="10" >
+					</md-input-container>
+				</section>
+			</md-content>
+			<hr id="result" />
+			<md-content>
+				<md-button class="md-raised pull-right" ng-click="download()">Download file</md-button>
+				<h3 style="display:inline">Your code</h3>
+				<section layout="row" layout-sm="column" layout-align="center center" layout-wrap style="margin-bottom:1em;margin-top:1em" ng-show="ready()">
+					<md-input-container class="md-block" flex="10">
+					</md-input-container>
+					<md-content flex="80" style="padding:1em" style="background-color:rgb(242, 252, 226)">
+						<div codegen="template" class="hide" id="original"></div>
+						<pre class="text-left"><code class="php" id="cloned"></code></pre>
+					</md-content>
+					<md-input-container class="md-block" flex="10" >
+					</md-input-container>
+				</section>
+			</md-content>
+		</div>
+		<footer>
+			Copyright Free for personal &amp; commercial use. (Offered under the BSD license).
+			Original credits belong to <a target="_blank" href="https://github.com/joelwan">joelwan</a>.
+			This new version has been rewritten by: <a target="_blank" href="https://github.com/Loksly">Loksly</a>
+			Special thanks to all previous contributors.
+		</footer>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-animate.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-aria.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.4/angular-material.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/languages/php.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2014-11-29/FileSaver.min.js"></script>
+		<script src="var_export.js"></script>
+		<script src="urlencode.js"></script>
+		<script src="index.js"></script>
+		<script src="script.js"></script>
+	</body>
+</html>

@@ -1,0 +1,14 @@
+body{ font-size:smaller;}
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak { display: none !important; }
+md-toolbar-filler md-icon { width:100px; height:100px; }
+.page-container { background-color: #f1f1f1; padding: 1em; }
+md-list{ border:solid thin rgb(33,150,243); }
+.bluebg{ background-color:rgb(33,150,243); }
+.text-right{ text-align:right;}
+.text-center{ text-align:center; }
+.text-left{ text-align:left;}
+.pull-right{ float: right;}
+h2.md-toolbar-tools > span {font-size: smaller; font-style:italic;}
+footer { font-size:smaller; text-align:center; padding:1em;}
+.motif{ font-size:smaller; font-style:italic;}
+.gray{ color: #999;}
