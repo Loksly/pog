@@ -73,7 +73,7 @@
 			</md-content>
 			<md-content class="bluebg" ng-hide="showTemplate">
 				<section layout="row" layout-sm="column" layout-align="center center" layout-wrap style="margin-bottom:1em;margin-top:1em">
-					<md-input-container class="md-block" flex="10" >
+					<md-input-container class="md-block" flex="1" >
 					</md-input-container>
 					<md-content flex="80" style="padding:1em" style="background-color:rgb(242, 252, 226)">
 						<section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
@@ -141,7 +141,8 @@
 							<md-button class="md-raised md-warn" ng-click="reset()">Reset</md-button>
 						</section>
 					</md-content>
-					<md-input-container class="md-block" flex="10" >
+					<md-input-container class="md-block" flex="19" >
+						<img ng-src="{{yumlink}}" ng-if="yumlink" style="max-width: 99%" >
 					</md-input-container>
 				</section>
 			</md-content>

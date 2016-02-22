@@ -72,6 +72,20 @@
 							attrs: instance.attrs
 						}
 					);
+					if (instance.objectName){
+						instance.yumlink = 'http://yuml.me/diagram/scruffy/class/[' + instance.objectName + '|' +
+							instance.attrs
+							.filter(function(e){
+								return e.name && e.name.trim() !== '';
+							})
+							.map(function(e){
+								return '+' + e.name;
+							})
+							.join(';') + ']';
+					} else {
+						instance.yumlink = false;
+					}
+
 				};
 				instance.generate = function(){
 					instance.attrs = instance.attrs.filter(function(e){ return e.name.trim() !== ''; });
@@ -102,6 +116,7 @@
 						instance.attrs.filter(function(e){ return e.name && e.name.trim() !== ''; }).length > 0 &&
 						instance.objectName.trim() !== '';
 				};
+				instance.yumlink = false;
 			}
 		])
 		.config(['$mdThemingProvider', function($mdThemingProvider) {
