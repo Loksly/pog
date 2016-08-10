@@ -175,8 +175,9 @@ class {{objectName}} extends POG_Base
 		if ($rows > 0)
 		{
 			$this->pog_query = "update `{{objectName}}` set
-			`letras`='".$this->Escape($this->letras)."',
-			`num`='".$this->Escape($this->num)."' where `{{objectName}}id`='".$this->{{objectName}}Id."'";
+			<span ng-repeat="attr in attrs" ng-if="attr.name.trim() !== ''">`{{attr.name}}`='".$this->Escape($this->{{attr.name}})."'<span ng-if="$index < attrs.length - 1">,
+			</span></span>
+			 where `{{objectName}}id`='".$this->{{objectName}}Id."'";
 		}
 		else
 		{
